@@ -46,6 +46,13 @@ public class JSONGetter extends Thread {
         return jsonIn;
     }
 
+    public static JSONGetter getJson(String url) {
+        JSONGetter jsonGetter = new JSONGetter();
+        JSONGetter.url = url;
+        jsonGetter.run();
+        return jsonGetter;
+    }
+
     @Override
     public void run() {
         ConnectAndGetData();

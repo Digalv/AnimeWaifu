@@ -17,19 +17,33 @@ public class Bot  extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        System.out.println(update.getMessage().getFrom().getUserName());
-        System.out.println(update.getMessage().getFrom().getId());
+        //System.out.println(update.getMessage().getFrom().getUserName());
+        //System.out.println(update.getMessage().getFrom().getId());
             if (update.getMessage().getText().equals("/waifu") || update.getMessage().getText().equals("/waifu@RandomWaifuDigalv_bot")  ){
-                JSONGetter jsonGetter = new JSONGetter();
-                JSONGetter.url = "https://api.waifu.im/random";
-                jsonGetter.run();
-                System.out.println("2");
+                System.out.println(update.getMessage().getFrom().getUserName());
+                JSONGetter jsonGetter = JSONGetter.getJson("https://api.waifu.im/random");
                 try {
-                    Main.downloadImg(new ObjectMapper().readValue(jsonGetter.jsonIn, Waifu.class).getImages().get(0).getUrl());
+                    Main.downloadMedia(new ObjectMapper().readValue(jsonGetter.jsonIn, Waifu.class).getImages().get(0).getUrl(), "waifu.jpg");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                //SendDocument sendDocument = new SendDocument(update.getMessage().getChatId().toString(),new InputFile(new File("./src/img/waifu.jpg")));
+                SendDocument sendDocument = new SendDocument(update.getMessage().getChatId().toString(),new InputFile(new File("./src/img/waifu.jpg")));
+                //SendPhoto sendPhoto = new SendPhoto(update.getMessage().getChatId().toString(),new InputFile(new File("./src/img/waifu.jpg")));
+                try {
+                    execute(sendDocument);
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (update.getMessage().getText().equals("/waifu_nsfw") || update.getMessage().getText().equals("/waifu_nsfw@RandomWaifuDigalv_bot")){
+                System.out.println(update.getMessage().getFrom().getUserName());
+                System.out.println("nsfw");
+                JSONGetter jsonGetter = JSONGetter.getJson("https://api.waifu.pics/nsfw/waifu");
+                try {
+                    Main.downloadMedia(new ObjectMapper().readValue(jsonGetter.jsonIn, WaifuNSFW.class).getUrl(), "waifu.jpg");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 SendPhoto sendPhoto = new SendPhoto(update.getMessage().getChatId().toString(),new InputFile(new File("./src/img/waifu.jpg")));
                 try {
                     execute(sendPhoto);
@@ -37,16 +51,16 @@ public class Bot  extends TelegramLongPollingBot {
                     e.printStackTrace();
                 }
             }
-            if (update.getMessage().getText().equals("/waifuNSFW") || update.getMessage().getText().equals("/waifuNSFW@RandomWaifuDigalv_bot")){
-                JSONGetter jsonGetter = new JSONGetter();
-                JSONGetter.url = "https://api.waifu.pics/nsfw/waifu";
-                jsonGetter.run();
+            if(update.getMessage().getText().equals("/electro_archon") || update.getMessage().getText().equals("/electro_archon@RandomWaifuDigalv_bot")){
+                System.out.println(update.getMessage().getFrom().getUserName());
+                JSONGetter jsonGetter = JSONGetter.getJson("https://api.waifu.im/random/?selected_tags=raiden-shogun");
                 try {
-                    Main.downloadImg(new ObjectMapper().readValue(jsonGetter.jsonIn, WaifuNSFW.class).getUrl());
+                    Main.downloadMedia(new ObjectMapper().readValue(jsonGetter.jsonIn, Waifu.class).getImages().get(0).getUrl(),"Raiden.jpg");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                SendPhoto sendPhoto = new SendPhoto(update.getMessage().getChatId().toString(),new InputFile(new File("./src/img/waifu.jpg")));
+                //SendDocument sendDocument = new SendDocument(update.getMessage().getChatId().toString(),new InputFile(new File("./src/img/Raiden.jpg")));
+                SendPhoto sendPhoto = new SendPhoto(update.getMessage().getChatId().toString(),new InputFile(new File("./src/img/Raiden.jpg")));
                 try {
                     execute(sendPhoto);
                 } catch (TelegramApiException e) {
